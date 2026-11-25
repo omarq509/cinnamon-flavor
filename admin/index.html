@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#253722">
+<title>لوحة إدارة سينامون فليفر</title>
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../style.css">
+<script defer src="../config.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.2"></script>
+<script defer src="../shared.js"></script>
+<script defer src="admin.js"></script>
+</head>
+<body class="admin-bg">
+<header class="admin-top"><div class="wrap"><div class="admin-brand"><span class="mini-mark">✳</span><span>سينامون فليفر<small>إدارة المنيو</small></span></div><div class="admin-actions"><a href="../" target="_blank" rel="noopener">عرض المنيو ↗</a><button id="logout" hidden>خروج</button></div></div></header>
+<main class="wrap admin-main">
+<section id="login" class="login-shell">
+<form id="login-form" class="login-card">
+<img class="logo" src="../assets/images/logo.png" alt="سينامون فليفر">
+<h1>تسجيل دخول المالك</h1><p class="subtle">أدخل البريد الإلكتروني وكلمة المرور لإدارة القائمة.</p>
+<label class="field">البريد الإلكتروني<input id="email" type="email" inputmode="email" autocomplete="username" autocapitalize="none" dir="ltr" placeholder="name@example.com" required></label>
+<label class="field">كلمة المرور<input id="password" type="password" autocomplete="current-password" dir="ltr" required></label>
+<button id="login-button" type="submit" class="btn btn-primary btn-block">تسجيل الدخول</button>
+<div class="error" id="login-error" role="alert" hidden></div>
+</form>
+</section>
+<section id="dashboard" hidden>
+<div class="dash-heading"><div><h1>لوحة التحكم</h1><p class="subtle">أدر منتجاتك وأسعارك وتوفرها من مكان واحد.</p></div></div>
+<div class="metrics"><div class="metric"><strong id="metric-products">—</strong><span>الأصناف</span></div><div class="metric"><strong id="metric-visible">—</strong><span>المتاحة</span></div><div class="metric"><strong id="metric-cats">—</strong><span>الأقسام</span></div></div>
+<div id="notice" class="success" role="status" hidden></div>
+<div class="dash-tabs" aria-label="لوحة التحكم"><button class="btn btn-secondary current" data-panel="products-panel">المنتجات</button><button class="btn btn-secondary" data-panel="categories-panel">الأقسام</button><button class="btn btn-secondary" data-panel="settings-panel">الحساب</button></div>
+<section id="products-panel" class="panel">
+<div class="panel-title"><h2>المنتجات</h2><button id="add-product" class="btn btn-primary">+ إضافة منتج</button></div>
+<div class="filter-row"><input class="search" id="search" type="search" placeholder="ابحث عن اسم منتج..." aria-label="بحث عن منتج"><select id="category-filter" aria-label="تصفية حسب القسم"></select></div>
+<div id="product-list" class="admin-list"></div>
+</section>
+<section id="categories-panel" class="panel" hidden>
+<div class="panel-title"><h2>الأقسام</h2><button id="add-category" class="btn btn-primary">+ إضافة قسم</button></div><div id="category-list" class="admin-list"></div>
+</section>
+<section id="settings-panel" class="panel" hidden>
+<div class="panel-title"><h2>تغيير كلمة المرور</h2></div>
+<form class="password-form" id="change-password">
+<label class="field">كلمة المرور الحالية<input id="current-password" type="password" autocomplete="current-password" required></label>
+<label class="field">كلمة المرور الجديدة<input id="new-password" type="password" minlength="12" autocomplete="new-password" required></label>
+<label class="field">تأكيد كلمة المرور الجديدة<input id="confirm-password" type="password" minlength="12" autocomplete="new-password" required></label>
+<button type="submit" class="btn btn-primary">حفظ كلمة المرور</button>
+</form>
+</section>
+<p class="admin-footer">CINNAMON FLAVOR · لوحة الإدارة</p>
+</section>
+</main>
+<dialog id="product-dialog" class="dialog">
+<form id="product-form">
+<div class="dialog-head"><h2 id="product-dialog-title">إضافة منتج</h2><button type="button" data-close="product-dialog" aria-label="إغلاق">×</button></div>
+<label class="field">اسم المنتج<input id="product-name" maxlength="100" required></label>
+<label class="field">ملاحظة للزبون (اختياري)<textarea id="product-note" maxlength="250" rows="3" placeholder="مثال: متوفر بحليب الشوفان" aria-describedby="product-note-hint"></textarea><small id="product-note-hint" class="field-hint">تظهر أسفل اسم المنتج بخط صغير. اتركها فارغة لإخفائها.</small></label>
+<label class="field">القسم<select id="product-category" required></select></label>
+<div class="two-fields"><label class="field">السعر (ريال سعودي)<input id="product-price" type="number" min="0" max="99999" step="0.01" required></label><label class="field">ترتيب العرض<input id="product-position" type="number" min="0" max="99999" step="1" required></label></div>
+<label class="field">صورة المنتج<input type="file" id="product-image" accept="image/jpeg,image/png,image/webp"></label>
+<img id="product-preview" class="image-preview" alt="معاينة صورة المنتج" hidden>
+<label class="field flex-field"><input id="remove-image" type="checkbox">حذف الصورة الحالية</label>
+<label class="field flex-field"><input id="product-visible" type="checkbox" checked>عرض المنتج للزبائن</label>
+<div id="product-error" class="error" role="alert" hidden></div><div class="dialog-actions"><button class="btn btn-secondary" type="button" data-close="product-dialog">إلغاء</button><button class="btn btn-primary" type="submit">حفظ المنتج</button></div>
+</form>
+</dialog>
+<dialog id="category-dialog" class="dialog"><form id="category-form"><div class="dialog-head"><h2 id="category-dialog-title">إضافة قسم</h2><button type="button" data-close="category-dialog" aria-label="إغلاق">×</button></div>
+<label class="field">اسم القسم<input id="category-name" maxlength="80" required></label><label class="field">ترتيب العرض<input id="category-position" type="number" min="0" max="99999" step="1" required></label><label class="field flex-field"><input id="category-visible" type="checkbox" checked>عرض القسم للزبائن</label>
+<div id="category-error" class="error" role="alert" hidden></div><div class="dialog-actions"><button class="btn btn-secondary" type="button" data-close="category-dialog">إلغاء</button><button class="btn btn-primary" type="submit">حفظ القسم</button></div></form></dialog>
+</body>
+</html>
